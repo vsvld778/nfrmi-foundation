@@ -1,0 +1,2 @@
+/* Preserve the original design while making native visibility deterministic. */
+[hidden]{display:none!important}

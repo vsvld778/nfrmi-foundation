@@ -1,0 +1,11 @@
+.cache/
+.pages-build-*/
+docs.previous/
+__pycache__/
+*.pyc
+node_modules/
+.env
+.env.*
+!.env.example
+.wrangler/
+.sites-runtime/

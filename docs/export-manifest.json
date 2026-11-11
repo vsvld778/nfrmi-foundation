@@ -1,0 +1,28 @@
+{
+  "exportedAt": "2026-11-11T21:50:28.797024+00:00",
+  "sourceOrigin": "https://nfrmi-foundation-vsevolod.nordterma.chatgpt.site",
+  "siteUrl": "https://vsvld778.github.io/nfrmi-foundation/",
+  "publicPages": 17,
+  "handoffPages": 2,
+  "sourcePaths": [
+    "/",
+    "/programs/investment",
+    "/insights/roadmap",
+    "/regions",
+    "/about",
+    "/programs/international-partnership",
+    "/insights",
+    "/programs/regional-development",
+    "/insights/cooperation-model",
+    "/programs",
+    "/insights/project-passport",
+    "/contacts",
+    "/programs/industrial-cooperation",
+    "/documents",
+    "/projects",
+    "/history",
+    "/privacy"
+  ],
+  "contentRefresh": "Manual snapshot; CMS edits require re-export and commit.",
+  "validation": "All local href/src/poster references resolve; no forms or server runtime scripts exported."
+}

@@ -1,0 +1,5 @@
+import {PageIntro} from '@/components/PublicUI';
+import ApplyForm from '@/components/ApplyForm';
+import {getContent} from '@/lib/server';
+export const metadata={title:'Предложить проект'};
+export default async function Apply({searchParams}:{searchParams:Promise<{direction?:string}>}){const [q,programs,regions]=await Promise.all([searchParams,getContent('program'),getContent('region')]);return <><PageIntro label="Предложить проект" title="С чего начинается сотрудничество" description="Расскажите о задаче, стадии проекта и формате участия, который вы рассматриваете. Начнём с главного."/><section className="container application-layout section-bottom"><aside><p className="eyebrow">Первое обращение</p><h2>Несколько сведений<br/>для начала работы</h2><ol className="application-tips"><li>Опишите продукт или задачу, которую необходимо решить.</li><li>Укажите, что уже подготовлено и какие ресурсы есть у команды.</li></ol><p className="small-copy">После отправки вы получите номер обращения. Дополнительные материалы можно будет передать в ходе дальнейшего обсуждения.</p></aside><ApplyForm direction={q.direction} programs={programs} regions={regions}/></section></>}
