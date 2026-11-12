@@ -47,6 +47,8 @@ export default function Header() {
     <div className="header-inner">
       <Link href="/" className="brand" aria-label="НФРМИ — главная"><Mark /><span><strong>НФРМИ</strong><small>Национальный фонд развития<br />и международной интеграции</small></span></Link>
       <button ref={toggle} type="button" className="menu-toggle" aria-expanded={open} aria-controls="main-navigation" aria-label={open ? 'Закрыть меню' : 'Открыть меню'} onClick={() => setOpen(previous => !previous)}>{open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
+    </div>
+    <div className="header-navigation">
       <nav id="main-navigation" className={open ? 'main-nav is-open' : 'main-nav'} aria-label="Основная навигация">
         {links.map(([href, label]) => <Link key={href} href={href} onClick={() => setOpen(false)} aria-current={path.startsWith(href) ? 'page' : undefined}>{label}</Link>)}
         <Link href="/apply" onClick={() => setOpen(false)} className="header-cta">Предложить проект <ArrowUpRight size={15} aria-hidden="true" /></Link>
