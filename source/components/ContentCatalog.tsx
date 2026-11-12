@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Link from '@/components/Link';
 import { ArrowRight, ArrowUpRight, Download, FileText, MapPin, Plus, Search } from 'lucide-react';
 import type { ContentItem, ContentType } from '@/lib/types';
@@ -26,6 +26,7 @@ function fileSize(value?: string) {
 }
 
 export function ContentCatalog({ items, type }: { items: ContentItem[]; type: ContentType }) {
+  const searchInput = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [region, setRegion] = useState('');
@@ -38,13 +39,13 @@ export function ContentCatalog({ items, type }: { items: ContentItem[]; type: Co
       && (!category || item.category === category) && (!region || item.region === region);
   }), [published, search, category, region]);
   const filtered = !!(search || category || region);
-  const reset = () => { setSearch(''); setCategory(''); setRegion(''); };
+  const reset = () => { setSearch(''); setCategory(''); setRegion(''); searchInput.current?.focus(); };
 
   if (!published.length) return <div className="catalog-empty"><p className="eyebrow">{type === 'project' ? 'Совместная работа начинается с идеи' : 'Информация фонда'}</p><h2>{empty[type].title}</h2><p>{empty[type].text}</p><Link className="btn btn-primary" href={empty[type].href}>{empty[type].action}<ArrowRight size={18} aria-hidden="true" /></Link></div>;
 
   return <div className={`catalog catalog-${type}`}>
     <div className="catalog-controls">
-      <div className="catalog-search"><label className="sr-only" htmlFor={`catalog-search-${type}`}>Поиск по {labels[type]}</label><Search size={19} aria-hidden="true" /><input className="input" id={`catalog-search-${type}`} value={search} onChange={event => setSearch(event.target.value)} placeholder={`Поиск по ${labels[type]}`} type="search" /></div>
+      <div className="catalog-search"><label className="sr-only" htmlFor={`catalog-search-${type}`}>Поиск по {labels[type]}</label><Search size={19} aria-hidden="true" /><input ref={searchInput} className="input" id={`catalog-search-${type}`} value={search} onChange={event => setSearch(event.target.value)} placeholder={`Поиск по ${labels[type]}`} type="search" /></div>
       {categories.length > 1 && <div className="catalog-filter"><label className="sr-only" htmlFor={`catalog-category-${type}`}>Рубрика</label><select id={`catalog-category-${type}`} className="input" value={category} onChange={event => setCategory(event.target.value)}><option value="">Все рубрики</option>{categories.map(value => <option key={value} value={value}>{value}</option>)}</select></div>}
       {type === 'project' && regions.length > 0 && <div className="catalog-filter"><label className="sr-only" htmlFor="catalog-region">Регион проекта</label><select id="catalog-region" className="input" value={region} onChange={event => setRegion(event.target.value)}><option value="">Все регионы</option>{regions.map(value => <option key={value} value={value}>{value}</option>)}</select></div>}
     </div>
