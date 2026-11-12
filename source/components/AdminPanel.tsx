@@ -70,6 +70,8 @@ export default function AdminPanel({ displayName }: { displayName: string }) {
   const [appOriginal, setAppOriginal] = useState("");
   const [uploading, setUploading] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
+  const focusHeadingAfterNavigation = useRef(false);
   const dirty = (editor !== null && JSON.stringify(editor) !== original) || (tab === "settings" && JSON.stringify(settingsDraft) !== JSON.stringify(settings)) || (selectedApp !== null && JSON.stringify(selectedApp) !== appOriginal);
   const newCount = applications.filter(a => a.status === "new").length;
 
@@ -85,8 +87,33 @@ export default function AdminPanel({ displayName }: { displayName: string }) {
   useEffect(() => { void refresh(); }, [refresh]);
   useEffect(() => { if (!dirty) return; const listener = (event: BeforeUnloadEvent) => { event.preventDefault(); }; window.addEventListener("beforeunload", listener); return () => window.removeEventListener("beforeunload", listener); }, [dirty]);
   useEffect(() => { if (tab !== "audit") return; api<{ items: AuditItem[] }>("/api/admin/audit").then(result => setAudit(result.items)).catch(error => setNotice({ kind: "error", text: error.message })).finally(() => setAuditLoading(false)); }, [tab]);
+  useEffect(() => {
+    if (!mobileOpen && focusHeadingAfterNavigation.current) {
+      focusHeadingAfterNavigation.current = false;
+      headingRef.current?.focus();
+    }
+  }, [mobileOpen, tab, editor, selectedApp]);
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setMobileOpen(false);
+      mobileToggleRef.current?.focus();
+    };
+    const closeOnDesktop = () => {
+      if (mobileToggleRef.current && mobileToggleRef.current.getClientRects().length === 0) setMobileOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("resize", closeOnDesktop);
+    closeOnDesktop();
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("resize", closeOnDesktop);
+    };
+  }, [mobileOpen]);
   function mayLeave() { if (busy || uploading) { setNotice({ kind: "error", text: "Дождитесь завершения текущего сохранения или загрузки." }); return false; } return !dirty || window.confirm("Есть несохранённые изменения. Покинуть редактор без сохранения?"); }
-  function navigate(next: Tab) { if (next === tab && !editor && !selectedApp) { setMobileOpen(false); return; } if (!mayLeave()) return; if(next === "audit") setAuditLoading(true); setTab(next); setEditor(null); setSelectedApp(null); setQuery(""); setStatusFilter(""); setPreview(false); setMobileOpen(false); setSettingsDraft(settings); setNotice(null); window.scrollTo({ top: 0 }); }
+  function navigate(next: Tab) { if (next === tab && !editor && !selectedApp) { focusHeadingAfterNavigation.current = mobileOpen; setMobileOpen(false); return; } if (!mayLeave()) return; focusHeadingAfterNavigation.current = mobileOpen; if(next === "audit") setAuditLoading(true); setTab(next); setEditor(null); setSelectedApp(null); setQuery(""); setStatusFilter(""); setPreview(false); setMobileOpen(false); setSettingsDraft(settings); setNotice(null); window.scrollTo({ top: 0 }); }
   function edit(item: ContentItem) { if (!mayLeave()) return; setEditor(structuredClone(item)); setOriginal(JSON.stringify(item)); setPreview(false); setNotice(null); window.scrollTo({ top: 0 }); }
   function updateEditor(key: keyof ContentItem, value: string) { setEditor(current => current ? { ...current, [key]: value } : null); }
   function updateMeta(key: string, value: string) { setEditor(current => current ? { ...current, meta: { ...current.meta, [key]: value } } : null); }
@@ -126,7 +153,7 @@ export default function AdminPanel({ displayName }: { displayName: string }) {
   const subtitle = tab === "overview" ? "Содержание и входящие предложения — в одном пространстве." : tab === "applications" ? "Проектные предложения и запросы на сотрудничество." : tab === "settings" ? "Основные тексты, контакты и сведения о фонде." : tab === "audit" ? "История изменений, выполненных администраторами." : section?.description;
 
   return <div className="adm-shell">
-    <header className="adm-mobile-bar"><Link href="/" className="adm-mobile-logo">НФРМИ</Link><button type="button" className="adm-icon-btn" aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"} aria-expanded={mobileOpen} aria-controls="admin-navigation" onClick={() => setMobileOpen(!mobileOpen)}>{mobileOpen ? <X /> : <Menu />}</button></header>
+    <header className="adm-mobile-bar"><Link href="/" className="adm-mobile-logo">НФРМИ</Link><button ref={mobileToggleRef} type="button" className="adm-icon-btn" aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"} aria-expanded={mobileOpen} aria-controls="admin-navigation" onClick={() => setMobileOpen(!mobileOpen)}>{mobileOpen ? <X /> : <Menu />}</button></header>
     {mobileOpen && <button className="adm-backdrop" aria-label="Закрыть меню" onClick={() => setMobileOpen(false)} />}
     <aside className={`adm-sidebar${mobileOpen ? " adm-sidebar-open" : ""}`} id="admin-navigation">
       <Link href="/" className="adm-brand" onClick={event => { if (!mayLeave()) event.preventDefault(); }}>НФРМИ<span>ПАНЕЛЬ УПРАВЛЕНИЯ</span></Link>

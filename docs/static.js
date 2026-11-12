@@ -15,6 +15,7 @@
       if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') { setOpen(false); toggle.focus(); }
     });
     document.addEventListener('click', (event) => { if (!event.target.closest('.site-header')) setOpen(false); });
+    document.addEventListener('focusin', (event) => { if (!event.target.closest('.site-header')) setOpen(false); });
     window.addEventListener('resize', () => { if (getComputedStyle(toggle).display === 'none') setOpen(false); });
   }
   document.querySelectorAll('.catalog').forEach((catalog) => {

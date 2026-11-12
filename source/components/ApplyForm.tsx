@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from '@/components/Link';
 import { ArrowRight, CheckCircle2, LoaderCircle } from 'lucide-react';
 import { regionNames, seedContent } from '@/lib/seed';
@@ -38,6 +38,10 @@ export function ApplyForm({ direction = '', programs, regions }: { direction?: s
   const key = useRef<string | null>(null);
   const form = useRef<HTMLFormElement>(null);
   const result = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (reference) result.current?.focus();
+  }, [reference]);
 
   const update = (name: keyof Fields, value: string | boolean) => {
     setValues(previous => ({ ...previous, [name]: value }));
@@ -100,7 +104,6 @@ export function ApplyForm({ direction = '', programs, regions }: { direction?: s
       }
       if (typeof data.reference !== 'string' || !data.reference) throw new Error('Сервер не подтвердил получение. Повторите отправку — дубликат не будет создан.');
       setReference(data.reference);
-      requestAnimationFrame(() => result.current?.focus());
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Соединение прервалось. Повторите отправку, не закрывая страницу.');
     } finally { setBusy(false); }
@@ -116,7 +119,7 @@ export function ApplyForm({ direction = '', programs, regions }: { direction?: s
   </div>;
 
   const errorFor = (name: keyof Fields) => errors[name] ? <span className="error" id={`apply-${name}-error`}>{errors[name]}</span> : null;
-  const fieldProps = (name: keyof Fields) => ({ id: `apply-${name}`, name, 'aria-invalid': !!errors[name], 'aria-describedby': errors[name] ? `apply-${name}-error` : undefined });
+  const fieldProps = (name: keyof Fields) => ({ id: `apply-${name}`, name, 'aria-invalid': !!errors[name], 'aria-describedby': [errors[name] ? `apply-${name}-error` : '', name === 'description' ? 'apply-description-hint' : ''].filter(Boolean).join(' ') || undefined });
   return <form ref={form} onSubmit={submit} className="form-grid" noValidate aria-busy={busy}>
     <div className="form-span form-intro"><p className="eyebrow">Первый шаг к сотрудничеству</p><h2>Расскажите о вашей задаче</h2><p className="muted">Поля со звёздочкой обязательны. В закрытой версии используйте вымышленные тестовые данные.</p></div>
     <div className="form-field form-span">
@@ -132,10 +135,10 @@ export function ApplyForm({ direction = '', programs, regions }: { direction?: s
     <div className="form-field"><label htmlFor="apply-region">Регион *</label><select {...fieldProps('region')} className="input" value={values.region} onChange={event => update('region', event.target.value)} required><option value="">Выберите регион</option>{regionOptions.map(name => <option key={name} value={name}>{name}</option>)}<option value="other">Другой регион или страна</option></select>{errorFor('region')}</div>
     {values.region === 'other' && <div className="form-field form-span"><label htmlFor="apply-otherRegion">Регион или страна *</label><input {...fieldProps('otherRegion')} className="input" value={values.otherRegion} onChange={event => update('otherRegion', event.target.value)} maxLength={120} required />{errorFor('otherRegion')}</div>}
     <div className="form-field form-span"><label htmlFor="apply-direction">Направление *</label><select {...fieldProps('direction')} className="input" value={values.direction} onChange={event => update('direction', event.target.value)} required><option value="">Выберите направление</option>{directions.map(item => <option key={item.id} value={item.slug}>{item.title}</option>)}<option value="consultation">Нужна консультация</option></select>{errorFor('direction')}</div>
-    <div className="form-field form-span"><label htmlFor="apply-description">Краткое описание *</label><textarea {...fieldProps('description')} className="input" rows={7} value={values.description} onChange={event => update('description', event.target.value)} minLength={50} maxLength={values.region === 'other' ? 4800 : 5000} placeholder="Опишите задачу, стадию подготовки, имеющиеся ресурсы и ожидаемый формат сотрудничества." required /><span className="muted form-counter">{values.description.length} / {values.region === 'other' ? 4800 : 5000} символов · минимум 50</span>{errorFor('description')}</div>
+    <div className="form-field form-span"><label htmlFor="apply-description">Краткое описание *</label><textarea {...fieldProps('description')} className="input" rows={7} value={values.description} onChange={event => update('description', event.target.value)} minLength={50} maxLength={values.region === 'other' ? 4800 : 5000} placeholder="Опишите задачу, стадию подготовки, имеющиеся ресурсы и ожидаемый формат сотрудничества." required /><span id="apply-description-hint" className="muted form-counter">{values.description.length} / {values.region === 'other' ? 4800 : 5000} символов · минимум 50</span>{errorFor('description')}</div>
     <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}><label htmlFor="apply-website">Ваш сайт<input id="apply-website" name="website" tabIndex={-1} autoComplete="off" value={values.website} onChange={event => update('website', event.target.value)} /></label></div>
     <div className="form-field form-span"><label className="consent-label" htmlFor="apply-consent"><input {...fieldProps('consent')} type="checkbox" checked={values.consent} onChange={event => update('consent', event.target.checked)} required /><span>Я ознакомлен(а) с <Link href="/privacy" target="_blank" rel="noopener noreferrer">условиями обработки данных</Link> и соглашаюсь на обработку сведений, указанных в форме. *</span></label>{errorFor('consent')}</div>
-    {message && <p className="error form-span" role="alert">{message}</p>}
+    <p className={message ? 'error form-span' : 'sr-only'} role="alert" aria-atomic="true">{message}</p>
     <div className="form-span form-actions"><button type="submit" className="btn btn-primary" disabled={busy}>{busy ? <><LoaderCircle size={18} aria-hidden="true" /> Отправляем…</> : <>Отправить предложение <ArrowRight size={18} aria-hidden="true" /></>}</button><p className="muted">После отправки вы получите номер обращения на этой странице.</p></div>
   </form>;
 }
