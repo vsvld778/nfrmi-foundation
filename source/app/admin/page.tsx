@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Authentication endpoints require a full document navigation. */
 import type { Metadata } from "next";
 import Link from "@/components/Link";
+import { Mark } from "@/components/Header";
 import { ArrowLeft, ArrowUpRight, LockKeyhole, ShieldCheck } from "lucide-react";
 import { getAdminAccess } from "@/lib/auth";
 import AdminPanel from "@/components/AdminPanel";
@@ -17,7 +18,7 @@ export default async function AdminPage() {
   return <main className="adm-access">
     <Link className="adm-access-back" href="/"><ArrowLeft size={18} /> На сайт фонда</Link>
     <section className="adm-access-card" aria-labelledby="access-title">
-      <div className="adm-access-mark">НФРМИ<span>УПРАВЛЕНИЕ САЙТОМ</span></div>
+      <div className="adm-access-mark" aria-label="НФРМИ — управление сайтом"><Mark/><span className="adm-brand-label">УПРАВЛЕНИЕ<br/>САЙТОМ</span></div>
       <div className="adm-access-icon">{user ? <ShieldCheck size={30} /> : <LockKeyhole size={30} />}</div>
       <p className="adm-eyebrow">РАБОЧЕЕ ПРОСТРАНСТВО</p>
       <h1 id="access-title">{user ? "Доступ для администратора" : "Содержание. Проекты. Обращения."}</h1>

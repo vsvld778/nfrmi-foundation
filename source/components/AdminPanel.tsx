@@ -4,6 +4,7 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import Link from "@/components/Link";
+import { Mark } from "@/components/Header";
 import { ArrowDownToLine, ArrowLeft, ArrowUpRight, Check, CheckCircle2, ChevronRight, CircleAlert, Clock3, FileText, FolderOpen, Globe2, Inbox, LayoutDashboard, ListChecks, LoaderCircle, Menu, Newspaper, Pencil, Plus, Search, Settings2, ShieldCheck, Trash2, Upload, Waypoints, X } from "lucide-react";
 
 import type { ContentType, ContentItem, Application } from "@/lib/types";
@@ -153,10 +154,10 @@ export default function AdminPanel({ displayName }: { displayName: string }) {
   const subtitle = tab === "overview" ? "Содержание и входящие предложения — в одном пространстве." : tab === "applications" ? "Проектные предложения и запросы на сотрудничество." : tab === "settings" ? "Основные тексты, контакты и сведения о фонде." : tab === "audit" ? "История изменений, выполненных администраторами." : section?.description;
 
   return <div className="adm-shell">
-    <header className="adm-mobile-bar"><Link href="/" className="adm-mobile-logo">НФРМИ</Link><button ref={mobileToggleRef} type="button" className="adm-icon-btn" aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"} aria-expanded={mobileOpen} aria-controls="admin-navigation" onClick={() => setMobileOpen(!mobileOpen)}>{mobileOpen ? <X /> : <Menu />}</button></header>
+    <header className="adm-mobile-bar"><Link href="/" className="adm-mobile-logo" aria-label="НФРМИ — на сайт фонда"><Mark/><span>Панель управления</span></Link><button ref={mobileToggleRef} type="button" className="adm-icon-btn" aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"} aria-expanded={mobileOpen} aria-controls="admin-navigation" onClick={() => setMobileOpen(!mobileOpen)}>{mobileOpen ? <X /> : <Menu />}</button></header>
     {mobileOpen && <button className="adm-backdrop" aria-label="Закрыть меню" onClick={() => setMobileOpen(false)} />}
     <aside className={`adm-sidebar${mobileOpen ? " adm-sidebar-open" : ""}`} id="admin-navigation">
-      <Link href="/" className="adm-brand" onClick={event => { if (!mayLeave()) event.preventDefault(); }}>НФРМИ<span>ПАНЕЛЬ УПРАВЛЕНИЯ</span></Link>
+      <Link href="/" className="adm-brand" aria-label="НФРМИ — на сайт фонда" onClick={event => { if (!mayLeave()) event.preventDefault(); }}><Mark/><span className="adm-brand-label">ПАНЕЛЬ<br/>УПРАВЛЕНИЯ</span></Link>
       <div className="adm-sidebar-label">РАБОЧЕЕ ПРОСТРАНСТВО</div>
       <nav aria-label="Разделы панели">{navItems.map(({ id, label, icon: Icon }, index) => <button key={id} className={`adm-nav-item${tab === id ? " adm-nav-active" : ""}${index === 2 || index === 7 ? " adm-nav-separated" : ""}`} onClick={() => navigate(id)} aria-current={tab === id ? "page" : undefined}><Icon size={19} strokeWidth={1.6} /><span>{label}</span>{id === "applications" && newCount > 0 && <b>{newCount}</b>}</button>)}</nav>
       <div className="adm-sidebar-bottom"><Link href="/" target="_blank" rel="noreferrer">Открыть сайт <ArrowUpRight size={17} /></Link><div className="adm-user"><div className="adm-avatar">{displayName.slice(0, 1).toUpperCase()}</div><div><strong>{displayName}</strong><span>Администратор</span></div></div><a className="adm-signout" href="/signout-with-chatgpt?return_to=/" onClick={event => { if (!mayLeave()) event.preventDefault(); }}>Выйти из аккаунта</a></div>

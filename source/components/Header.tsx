@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 
-export function Mark(){return <img className="brand-mark" src="/images/logo-bridge.png" width={1882} height={836} alt="" aria-hidden="true" />}
+export function Mark(){return <span className="brand-logo" aria-hidden="true"><img src="/images/nfrmi-logo.webp" width={1312} height={1199} alt="" /></span>}
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -45,7 +45,7 @@ export default function Header() {
 
   return <header className="site-header" ref={header}>
     <div className="header-inner">
-      <Link href="/" className="brand" aria-label="НФРМИ — главная"><Mark /><span><strong>НФРМИ</strong><small>Национальный фонд развития<br />и международной интеграции</small></span></Link>
+      <Link href="/" className="brand" aria-label="НФРМИ — главная"><Mark /><span className="brand-description">Национальный фонд развития<br />и международной интеграции</span></Link>
       <button ref={toggle} type="button" className="menu-toggle" aria-expanded={open} aria-controls="main-navigation" aria-label={open ? 'Закрыть меню' : 'Открыть меню'} onClick={() => setOpen(previous => !previous)}>{open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
     </div>
     <div className="header-navigation">

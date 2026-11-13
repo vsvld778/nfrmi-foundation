@@ -5,8 +5,8 @@ export const metadata: Metadata = {
   title: { default: "НФРМИ — Развитие регионов и международное сотрудничество", template: "%s · НФРМИ" },
   description: "Национальный фонд развития и международной интеграции. Подготовка проектов, межрегиональная и международная производственная кооперация.",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: "/images/nfrmi-logo.webp",
+    shortcut: "/images/nfrmi-logo.webp",
   },
 };
 
