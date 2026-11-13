@@ -149,7 +149,7 @@ def main():
                         card.attrs['data-category']=eyebrow.text().strip() if eyebrow else ''
                         card.attrs['data-region']=region.text().strip() if region else ''
             canonical=args.site_url.rstrip('/')+(route+'/' if route!='/' else '/')
-            head.children.extend([Node('title'),Node('meta',[('name','description'),('content',descriptions[-1] if descriptions else '')]),Node('link',[('rel','icon'),('href',base+'images/nfrmi-logo.webp')]),Node('link',[('rel','canonical'),('href',canonical)]),Node('link',[('rel','stylesheet'),('href',base+'static.css')])])
+            head.children.extend([Node('title'),Node('meta',[('name','description'),('content',descriptions[-1] if descriptions else '')]),Node('link',[('rel','icon'),('href',base+'favicon.svg')]),Node('link',[('rel','canonical'),('href',canonical)]),Node('link',[('rel','stylesheet'),('href',base+'static.css')])])
             head.children[-5].children=[Node(data=html.escape(title))]
             body.children.append(Node('script',[('src',base+'static.js'),('defer',None)]))
             rendered[route]=doc.render()

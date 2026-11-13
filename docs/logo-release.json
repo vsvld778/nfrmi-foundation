@@ -1,0 +1,7 @@
+{
+  "publishedSiteVersion": 8,
+  "sourceCommit": "76b5158b119061eaef93a0a60b1972175b578ed6",
+  "logoUrl": "https://nfrmi-foundation-vsevolod.nordterma.chatgpt.site/images/nfrmi-logo-horizontal.webp",
+  "faviconUrl": "https://nfrmi-foundation-vsevolod.nordterma.chatgpt.site/favicon.svg",
+  "notes": "The public snapshot was updated through GitHub after the local runtime became unavailable. Canonical complete source is Site version 8; the source/ mirror remains at version 7 until the next normal export/sync. The horizontal logo is hosted on the primary foundation site. The next standard export will fetch the same logo and favicon into docs/."
+}

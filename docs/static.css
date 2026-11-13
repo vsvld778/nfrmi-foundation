@@ -1,2 +1,12 @@
 /* Preserve the original design while making native visibility deterministic. */
 [hidden]{display:none!important}
+
+/* Horizontal user-supplied identity; matches the published Site version 8.
+   Image bytes are served by the same foundation's primary site. */
+.site-header{grid-template-columns:360px minmax(0,1fr);gap:32px}
+.brand-logo{width:360px;max-width:100%;aspect-ratio:1750/376;flex:0 1 auto}
+.brand-logo img{width:117.028571%;left:-8.685714%;top:-42.021277%}
+.footer-brand .brand-logo{width:320px;flex-basis:auto}
+@media(max-width:640px){
+ .brand .brand-logo{width:min(280px,calc(100vw - 88px));flex-basis:auto}
+}
