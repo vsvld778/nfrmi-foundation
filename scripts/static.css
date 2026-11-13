@@ -10,3 +10,11 @@
 @media(max-width:640px){
  .brand .brand-logo{width:min(280px,calc(100vw - 88px));flex-basis:auto}
 }
+
+/* Keep the desktop navigation's right edge on the 1464px hero boundary. */
+@media(min-width:1261px){
+ .site-header{
+  gap:64px;
+  padding:16px max(0px,calc((100% - 1464px)/2)) 16px max(32px,calc((100% - 1400px)/2));
+ }
+}
